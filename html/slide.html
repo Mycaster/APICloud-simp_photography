@@ -1,0 +1,236 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title>slide</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <style>
+        * {
+            outline: 0;
+        }
+        /*header*/
+        header {
+            background-color: #f2f2f2;
+		    height: 48px;
+        }
+        #header .title {
+            line-height:40px;
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            flex: 1;
+            text-align: center;
+        }
+        .header-a-hov {
+		    background:url(../image/side_menu_hov.png) no-repeat center;
+		    -webkit-background-size: 23px 15px;
+		}
+        #header .menu {
+            background-image: url("../image/menu.png");
+        }
+        /* headerBanner页面样式  */
+		#headerBanner{
+			background: url(../res/drawable-xhdpi/bg_nav_sub_on.9.png) left top repeat-x;
+			text-align: center; background-color: #3C3C3C; 
+			background-size: 4px 48px;
+		    width: 100%;
+		    height: 48px;
+		    position: relative;
+		}
+		#headerBanner .banner{
+			float: left;
+			position: relative;
+			z-index: 2;
+			width: 25%;
+			height: 48px;
+			line-height: 48px;
+			color: #FFF;
+		}
+		#headerBanner .banner.active{
+			color: #D4A82A;
+			background: url(../res/drawable-xhdpi/bg_nav_on.png) left top repeat-x;
+			background-size: 20px 48px;
+		}
+    </style>
+</head>
+<body>
+	<header>
+	    <div id="header ">
+	    	<a tapmode="header-a-hov" onclick="api.openSlidPane({type:'left'});"></a>
+	   <!--     <a class="menu" tapmode="" onclick="sliding()"></a> -->
+	        <div class="title" >简约摄影 </div>
+	    </div>
+	</header>
+    <div id="wrap">
+        <div id="headerBanner">
+        	<div class="banner frame_name active" onclick="changeIndexMenu(0);" tapmode>人像</div>
+        	<div class="banner frame_name" onclick="changeIndexMenu(1);" tapmode>风景</div>
+        	<div class="banner frame_name" onclick="changeIndexMenu(2);" tapmode>纪实</div>
+        	<div class="banner frame_name" onclick="changeIndexMenu(3);" tapmode>新闻</div>
+        	<div class="banner frame_name" onclick="changeIndexMenu(4);" tapmode>城市</div>
+        	<div class="banner frame_name" onclick="changeIndexMenu(5);" tapmode>人文</div>
+        	<div class="banner frame_name" onclick="changeIndexMenu(6);" tapmode>旅行</div>
+    	</div>
+        <div id="main">
+                
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/slide.js"></script>
+
+<script>
+	/*
+	 * 导航栏的滑动效果 ,原版效果没有实现
+	 */
+    var aFrameName = $api.domAll('#headerBanner .frame_name');
+    var chooseStyleBtn = $api.byId('chooseStyleBtn');
+    function changeBanner(num){
+        for(var i = 0,len = aFrameName.length;i < len; i++ ){
+            $api.removeCls(aFrameName[i],'active');
+        }
+        $api.addCls(aFrameName[num],'active');
+    };
+    // 改变展示样式按钮
+    function changeBtn(style){
+        switch(style){
+            case 'show': chooseStyleBtn.className = 'list';
+                        $api.attr(chooseStyleBtn,'onclick', 'showStyle("movie","list");');
+                        break;  
+            case 'list': chooseStyleBtn.className = 'show';
+                        $api.attr(chooseStyleBtn,'onclick', 'showStyle("movie","show");');
+                        break;  
+            case 'cinema_map': chooseStyleBtn.className = 'cinema_list';
+                        $api.attr(chooseStyleBtn,'onclick', 'showStyle("cinema","cinema_list");');
+                        break;  
+            case 'cinema_list': chooseStyleBtn.className = 'cinema_map';
+                        $api.attr(chooseStyleBtn,'onclick', 'showStyle("cinema","cinema_map");');
+                        break;  
+            default: chooseStyleBtn.className = '';
+                    $api.removeAttr(chooseStyleBtn,'onclick');
+        }
+        api.parseTapmode();
+
+    };
+    
+	// 首页的framegroup
+    function openIndexFrameGroup(){
+	    var header = $api.byId('header');
+        $api.fixIos7Bar(header); 
+        // fixios7bar,这里的header最好是纯色，里面的内容最好不要用top：0；
+	    var headerBanner = $api.byId('headerBanner');
+	    window.headerPos = $api.offset(header);
+	    window.headerBannerPos = $api.offset(headerBanner);
+	    var main = $api.byId('main');
+	    var mainPos = $api.offset(main);
+
+        window.wW = api.winWidth;
+        window.wH = api.winHeight;
+        var w = parseInt(wW/3);
+        var h = parseInt(wH*4/5);
+        api.setWinAttr({
+            bounces: false
+        });
+        api.openFrameGroup({
+            name: 'index_frameGroup',
+            bounces: false,
+            index: 0,
+            rect: {
+                x: 0,
+                y: headerPos.h+headerBannerPos.h,
+                //y: 0,
+                w: 'auto',
+                //h: 'auto' 
+                h: wH-headerPos.h-headerBannerPos.h
+            },
+            scrollEnabled: true,
+            frames: [
+                {
+                    name: 'people',
+                    url: 'indexgroup/people.html',
+                    bounces: false,
+                    opaque: true,
+                    bgColor: '#000'
+                },{
+                    name: 'scene',
+                    url: 'indexgroup/scene.html',
+                    bounces: false,
+                    opaque: true,
+                    bgColor: '#000'
+                },{
+                    name: 'facts',
+                    url: 'indexgroup/facts.html',
+                    bounces: false,
+                    opaque: true,
+                    bgColor: '#000'
+                },{
+                    name: 'news',
+                    url: 'indexgroup/news.html',
+                    bounces: false,
+                    opaque: true,
+                    bgColor: '#000'
+                },{
+                    name: 'cities',
+                    url: 'indexgroup/cities.html',
+                    bounces: false,
+                    opaque: true,
+                    bgColor: '#000'
+                },{
+                    name: 'trip',
+                    url: 'indexgroup/trip.html',
+                    bounces: false,
+                    opaque: true,
+                    bgColor: '#000'
+                }
+            ]
+        },function(ret,err){
+            var index = ret.index;
+            var name = ret.name;
+            // 两个frame，每个frame有两种图标，这里写得有点绕
+            if (index == 0) {
+                if ($api.getStorage('movieStyle')) {
+                    changeIndexStyleBtn($api.getStorage('movieStyle'));
+                    api.execScript({
+                        frameName: 'movie',
+                        script: 'changeStyle("'+$api.getStorage('movieStyle')+'")'
+                    });
+                } else{
+                    // $api.setStorage('movieStyle','show');
+                    changeIndexStyleBtn('show');
+                }
+            } else if(index == 1){
+                if ($api.getStorage('cinemaStyle')) {
+                    changeIndexStyleBtn($api.getStorage('cinemaStyle'));
+                    api.execScript({
+                        frameName: 'cinema',
+                        script: 'changeStyle("'+$api.getStorage('cinemaStyle')+'")'
+                    });
+                } else{
+                    // $api.setStorage('cinemaStyle','cinema_list');
+                    changeIndexStyleBtn('cinema_list');
+                }
+            } else {
+                changeIndexStyleBtn();
+            }
+            changeBanner(index); 
+            // 测试欢迎页，打开可测
+            // $api.rmStorage('firstStart');               
+        });
+        
+    };
+    
+    apiready = function () {
+	    $api.fixIos7Bar($api.dom('.title'));
+	    api.addEventListener({
+	        name: 'keyback'
+	    }, function(ret, err){
+	        api.closeWidget();
+	    });
+	    openIndexFrameGroup();
+	};
+    
+</script>
+
+
+</html>
